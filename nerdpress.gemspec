@@ -33,4 +33,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 12.0'
   spec.add_development_dependency 'minitest', '~> 5.10'
   spec.add_development_dependency 'simplecov', '~> 0.14'
+
+  spec.add_dependency 'thor', '~> 0.19'
 end

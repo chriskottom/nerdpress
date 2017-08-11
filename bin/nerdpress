@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'bundler/setup'
+require 'thor'
+require 'nerdpress'
+
+module NerdPress
+  class CLI < Thor
+    desc 'version', 'Display the gem version'
+    def version
+      puts NerdPress::VERSION
+    end
+
+    register NerdPress::Commands::NewProject,
+             'new',
+             'new DIRECTORY',
+             'Create a new empty NerdPress project'
+
+    register NerdPress::Commands::Build,
+             'build',
+             'build [FORMATS] [OPTIONS]',
+             'Build the project in selected (or all) supported formats'
+  end
+end
+
+NerdPress::CLI.start(ARGV)
