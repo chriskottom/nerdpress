@@ -21,4 +21,12 @@ class NerdPress::Commands::NewProject < Thor::Group
   def self.banner
     "#{basename} new PATH"
   end
+
+  def self.source_root
+    File.expand_path File.join(File.dirname(__FILE__), '../templates')
+  end
+
+  def create_project
+    directory 'new_project', File.expand_path(path)
+  end
 end

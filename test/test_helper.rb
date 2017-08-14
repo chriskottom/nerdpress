@@ -9,3 +9,14 @@ require 'nerdpress'
 require "minitest/autorun"
 require 'minitest/spec'
 require 'minitest/mock'
+
+require 'support/build_helpers'
+
+class Minitest::Test
+  include BuildHelpers
+
+  def teardown
+    reset_build
+    super
+  end
+end
