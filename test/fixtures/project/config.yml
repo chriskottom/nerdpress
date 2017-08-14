@@ -1,0 +1,3 @@
+---
+build_dir: ./test/tmp
+log_level: debug
