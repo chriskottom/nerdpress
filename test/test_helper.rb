@@ -11,6 +11,7 @@ require 'minitest/spec'
 require 'minitest/mock'
 
 require 'support/build_helpers'
+require 'support/command_helpers'
 
 class Minitest::Test
   include BuildHelpers

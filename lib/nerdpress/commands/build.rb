@@ -4,6 +4,8 @@ require 'date'
 class NerdPress::Commands::Build < Thor::Group
   include Thor::Actions
 
+  include NerdPress::Logging
+
   desc <<~HEREDOC
   Description:
     The 'nerdpress build' command builds the project in one or more export
@@ -41,5 +43,18 @@ class NerdPress::Commands::Build < Thor::Group
 
   def self.banner
     "#{basename} build [FORMATS] [OPTIONS]"
+  end
+
+  def setup_build
+    @project = NerdPress::Project.new
+    @project.configure(options[:config_file]) do |config|
+      @project.setup_logger!
+
+      config.version = options[:version]
+      info "Exporting version #{ config.version }"
+
+      config.publication_date = options[:date]
+      info "Exported file will be published on #{ config.publication_date }"
+    end
   end
 end
