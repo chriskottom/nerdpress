@@ -3,7 +3,7 @@ require 'date'
 
 class NerdPress::Commands::Build < Thor::Group
   include Thor::Actions
-
+  include NerdPress::Formats
   include NerdPress::Logging
 
   desc <<~HEREDOC
@@ -55,6 +55,24 @@ class NerdPress::Commands::Build < Thor::Group
 
       config.publication_date = options[:date]
       info "Exported file will be published on #{ config.publication_date }"
+    end
+  end
+
+  # Methods that should not be considered Thor commands for invocation
+  no_commands do
+    alias_method :old_formats, :formats
+
+    def formats
+      if !defined?(@normalized_formats)
+        @normalized_formats = old_formats.map { |f| f.downcase }
+        if @normalized_formats.empty? ||
+           @normalized_formats.include?(ALL_FORMAT)
+          @normalized_formats.replace SUPPORTED_FORMATS
+        end
+        @normalized_formats.select! { |f| SUPPORTED_FORMATS.include?(f) }
+      end
+
+      @normalized_formats
     end
   end
 end

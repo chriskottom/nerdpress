@@ -27,7 +27,7 @@ describe NerdPress::Commands::Build do
 
     it 'defaults to all formats' do
       command = NerdPress::Commands::Build.new
-      assert_equal [ NerdPress::Formats::ALL_FORMAT ], command.formats
+      assert_equal NerdPress::Formats::SUPPORTED_FORMATS, command.formats
     end
   end
 
@@ -41,6 +41,28 @@ describe NerdPress::Commands::Build do
       command = NerdPress::Commands::Build.new
       assert_equal %w(date version), command.options.keys.sort
       assert_nil command.options['config_file']
+    end
+  end
+
+  describe '#formats' do
+    it 'lowercases the formats' do
+      formats = %w(PDF HTML)
+      command = NerdPress::Commands::Build.new(formats, options)
+      assert_equal %w(pdf html), command.formats
+    end
+
+    it 'filters out unsupported formats' do
+      formats = %w(pdf paper html)
+      command = NerdPress::Commands::Build.new(formats, options)
+      assert_equal %w(pdf html), command.formats
+    end
+
+    it 'defaults to all supported formats' do
+      command = NerdPress::Commands::Build.new([], options)
+      assert_equal NerdPress::Formats::SUPPORTED_FORMATS, command.formats
+
+      command = NerdPress::Commands::Build.new(['all'], options)
+      assert_equal NerdPress::Formats::SUPPORTED_FORMATS, command.formats
     end
   end
 
