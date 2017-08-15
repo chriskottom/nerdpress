@@ -17,4 +17,19 @@ class NerdPress::Project
     yield @configuration if block_given?
     @configuration
   end
+
+  def setup_logger!
+    NerdPress::Logger.setup(log_dir: build_path, log_level: log_level)
+  end
+
+  private
+
+  def build_path
+    @build_dir ||= (config && config.build_dir) || home_directory.join('build')
+    Pathname.new(@build_dir)
+  end
+
+  def log_level
+    (config && config.log_level) || NerdPress::Logger::DEFAULT_LEVEL
+  end
 end

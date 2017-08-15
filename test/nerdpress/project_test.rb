@@ -55,4 +55,45 @@ describe NerdPress::Project do
       end
     end
   end
+
+  describe '#setup_logger!' do
+    describe 'log file' do
+      before do
+        project.configure { |config| config.build_dir = build_path.to_s }
+        project.setup_logger!
+      end
+
+      it 'sets up a log file in the build directory' do
+        log_message = 'testing testing testing'
+        log_file = build_path.join('build.log')
+
+        out, err = capture_subprocess_io do
+          NerdPress::Logger.instance.info log_message
+        end
+
+        assert_match(/#{log_message}/, out)
+        assert_empty err
+        assert log_file.exist?, 'Expected log file to exist'
+      end
+    end
+
+    describe 'log level' do
+      it 'sets the log level according to the configuration' do
+        project.configure do |config|
+          config.log_level = :info
+        end
+
+        project.setup_logger!
+        assert_equal Logger::INFO, NerdPress::Logger.instance.level
+      end
+
+      describe 'when log level not configured' do
+        it 'uses the default log level (DEBUG)' do
+          project.configure
+          project.setup_logger!
+          assert_equal Logger::DEBUG, NerdPress::Logger.instance.level
+        end
+      end
+    end
+  end
 end
