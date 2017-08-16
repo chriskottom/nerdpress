@@ -12,6 +12,7 @@ require 'minitest/mock'
 
 require 'support/build_helpers'
 require 'support/command_helpers'
+require 'support/markup_helpers'
 
 class Minitest::Test
   include BuildHelpers

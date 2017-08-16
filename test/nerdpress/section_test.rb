@@ -63,9 +63,41 @@ describe NerdPress::Section do
     end
   end
 
+  describe '#to_html' do
+    it 'applies the default processor chain' do
+      html = File.read(html_source)
+      mock1 = mock_processor(html, html_section)
+      mock2 = mock_processor(html, html_section)
+
+      NerdPress::Processors.stub(:default_processors, [mock1, mock2]) do
+        html_section.to_html
+      end
+
+      assert_mock mock1
+      assert_mock mock2
+    end
+  end
+
+  describe '#export_html!' do
+    it 'writes the HTML to the designated export directory' do
+      section = markdown_section
+      refute section.export_path.exist?, 'Expected export file not to exist'
+
+      section.export_html!
+      assert section.export_path.exist?, 'Expected export file to exist'
+      assert_equal MarkupHelpers::SAMPLE_MARKDOWN, section.export_path.read
+    end
+  end
+
   private
 
   def klass
     NerdPress::Section
+  end
+
+  def mock_processor(*args)
+    mock = Minitest::Mock.new
+    mock.expect(:process, args.first, args)
+    mock
   end
 end

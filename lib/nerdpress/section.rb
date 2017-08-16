@@ -1,5 +1,7 @@
 require 'pathname'
 
+require_relative './processor'
+
 class NerdPress::Section
   HTML_EXTENSIONS = %w( html htm xhtml )
   MARKDOWN_EXTENSIONS = %w( markdown mdown mkdn md mkd mdwn )
@@ -32,9 +34,31 @@ class NerdPress::Section
     @export_dir_path.join(html_filename)
   end
 
+  def to_html
+    result = source
+    processors.each do |processor|
+      result = processor.process(result, self)
+    end
+    result
+  end
+
+  def export_html!
+    @export_dir_path.mkpath unless @export_dir_path.exist?
+    export_path.delete if export_path.exist?
+    export_path.write self.to_html
+  end
+
   private
 
   def html_filename
     "#{ @source_path.basename('.*') }.html"
+  end
+
+  def source
+    @source_path.read
+  end
+
+  def processors
+    NerdPress::Processors.default_processors
   end
 end
