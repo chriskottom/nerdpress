@@ -25,3 +25,5 @@ module NerdPress::Processors
     [ ]
   end
 end
+
+require_relative './processors/markdown_to_html.rb'

@@ -58,7 +58,15 @@ class NerdPress::Section
     @source_path.read
   end
 
+  def markdown?
+    extension = @source_path.extname.sub(/^\./, '')
+    MARKDOWN_EXTENSIONS.include?(extension)
+  end
+
   def processors
-    NerdPress::Processors.default_processors
+    proc_chain = []
+    proc_chain << NerdPress::Processors::MarkdownToHTML if markdown?
+    proc_chain += NerdPress::Processors.default_processors
+    proc_chain
   end
 end

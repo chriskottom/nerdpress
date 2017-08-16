@@ -79,13 +79,26 @@ describe NerdPress::Section do
   end
 
   describe '#export_html!' do
-    it 'writes the HTML to the designated export directory' do
-      section = markdown_section
-      refute section.export_path.exist?, 'Expected export file not to exist'
+    describe 'when source is HTML' do
+      it 'writes the HTML to the designated export directory' do
+        section = html_section
+        refute section.export_path.exist?, 'Expected export file not to exist'
 
-      section.export_html!
-      assert section.export_path.exist?, 'Expected export file to exist'
-      assert_equal MarkupHelpers::SAMPLE_MARKDOWN, section.export_path.read
+        section.export_html!
+        assert section.export_path.exist?, 'Expected export file to exist'
+        assert_equal section.source_path.read, section.export_path.read
+      end
+    end
+
+    describe 'when source is Markdown' do
+      it 'converts to HTML and writes to the designated export directory' do
+        section = markdown_section
+        refute section.export_path.exist?, 'Expected export file not to exist'
+
+        section.export_html!
+        assert section.export_path.exist?, 'Expected export file to exist'
+        assert_equal MarkupHelpers::SAMPLE_HTML, section.export_path.read
+      end
     end
   end
 
