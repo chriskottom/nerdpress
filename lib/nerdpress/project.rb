@@ -1,6 +1,7 @@
 require 'pathname'
 
 require_relative './configuration.rb'
+require_relative './section.rb'
 
 class NerdPress::Project
   attr_reader :home_directory, :configuration
@@ -31,5 +32,13 @@ class NerdPress::Project
 
   def log_level
     (config && config.log_level) || NerdPress::Logger::DEFAULT_LEVEL
+  end
+
+  def section_import_path
+    home_directory.join('sections')
+  end
+
+  def sections
+    @sections ||= Section.load_from_directory(section_import_path)
   end
 end
