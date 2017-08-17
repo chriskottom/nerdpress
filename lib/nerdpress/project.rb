@@ -23,6 +23,13 @@ class NerdPress::Project
     NerdPress::Logger.setup(log_dir: build_path, log_level: log_level)
   end
 
+  def export_sections!
+    sections.each do |section|
+      section.export_html!
+      yield section if block_given?
+    end
+  end
+
   private
 
   def build_path
@@ -38,7 +45,12 @@ class NerdPress::Project
     home_directory.join('sections')
   end
 
+  def section_export_path
+    build_path.join('sections')
+  end
+
   def sections
-    @sections ||= Section.load_from_directory(section_import_path)
+    @sections ||= NerdPress::Section.load_from_directory(section_import_path,
+                                                         section_export_path)
   end
 end

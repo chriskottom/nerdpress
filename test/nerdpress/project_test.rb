@@ -1,7 +1,6 @@
 require 'test_helper'
 
 describe NerdPress::Project do
-  let(:project_path) { './test/fixtures/project' }
   let(:project) { NerdPress::Project.new(project_path) }
 
   describe '#initialize' do
@@ -93,6 +92,31 @@ describe NerdPress::Project do
           project.setup_logger!
           assert_equal Logger::DEBUG, NerdPress::Logger.instance.level
         end
+      end
+    end
+  end
+
+  describe '#export_sections!' do
+    before do
+      project.configure
+    end
+
+    it 'creates an HTML export folder in the build directory' do
+      refute section_export_path.exist?, 'Expected section dir not to exist'
+
+      project.export_sections!
+      assert section_export_path.exist?, 'Expected section dir to exist'
+    end
+
+    it 'writes HTML for each section to an export file' do
+      sections = NerdPress::Section.load_from_directory(section_import_path,
+                                                        section_export_path)
+      project.export_sections!
+
+      sections.each do |section|
+        path = section.export_path
+        assert path.exist?, "Expected section to be exported to #{ path }"
+        assert_equal section.to_html, path.read
       end
     end
   end

@@ -2,14 +2,26 @@ require 'fileutils'
 
 module BuildHelpers
   BUILD_DIR = './test/tmp'
-  CONFIG_FILE = './test/fixtures/project/config.yml'
+  PROJECT_DIR = './test/fixtures/project'
 
   def build_path
     @build_path ||= Pathname.new(BUILD_DIR)
   end
 
+  def section_export_path
+    build_path.join('sections')
+  end
+
+  def project_path
+    @project_path ||= Pathname.new(PROJECT_DIR)
+  end
+
   def config_file
-    @config_file ||= Pathname.new(CONFIG_FILE)
+    project_path.join('config.yml')
+  end
+
+  def section_import_path
+    project_path.join('sections')
   end
 
   def reset_build
