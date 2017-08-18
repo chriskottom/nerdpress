@@ -4,7 +4,7 @@ describe NerdPress::Commands::Build do
   include CommandHelpers
 
   let(:formats) { %w( all ) }
-  let(:config)  { './test/fixtures/project/config.yml' }
+  let(:config)  { config_file.to_s }
   let(:version) { '1.2.3' }
   let(:date)    { '2017-07-03' }
   let(:options) {
@@ -88,6 +88,35 @@ describe NerdPress::Commands::Build do
       assert_match(/Exporting version #{ version }/, out)
       assert_match(/Exported file will be published on #{ date }/, out)
       assert_empty err
+    end
+  end
+
+  describe '#export_text' do
+    it 'creates the export directory' do
+      refute section_export_path.exist?, 'Expected section dir not to exist'
+
+      out, err = capture_subprocess_io do
+        command = NerdPress::Commands::Build.new(formats, options)
+        invoke_tasks(command, :setup_build, :export_text)
+      end
+
+      assert section_export_path.exist?, 'Expected section dir to exist'
+    end
+
+    it 'exports each Section as HTML' do
+      sections = NerdPress::Section.load_from_directory(section_import_path,
+                                                        section_export_path)
+
+      out, err = capture_subprocess_io do
+        command = NerdPress::Commands::Build.new(formats, options)
+        invoke_tasks(command, :setup_build, :export_text)
+      end
+
+      sections.each do |section|
+        path = section.export_path
+        assert path.exist?, "Expected section to be exported to #{ path }"
+        assert_equal section.to_html, path.read
+      end
     end
   end
 end

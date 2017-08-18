@@ -49,12 +49,21 @@ class NerdPress::Commands::Build < Thor::Group
     @project = NerdPress::Project.new
     @project.configure(options[:config_file]) do |config|
       @project.setup_logger!
+      info '~~ SETTING UP BUILD ~~'
 
       config.version = options[:version]
       info "Exporting version #{ config.version }"
 
       config.publication_date = options[:date]
       info "Exported file will be published on #{ config.publication_date }"
+    end
+  end
+
+  def export_text
+    info '~~ EXPORTING TEXT SECTIONS TO HTML ~~'
+
+    @project.export_sections! do |section|
+      info "Exported section to #{ section.export_path }"
     end
   end
 
