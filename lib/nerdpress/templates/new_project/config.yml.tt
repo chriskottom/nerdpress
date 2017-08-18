@@ -1,7 +1,19 @@
 ---
+# Build directory: where intermediate and final deliverables will be placed
+# Default: ./build
+#
+# build_dir: ./build
+
+# Sections directory: where the main text source files live
+# Default: ./sections
+# Source files will be processed and assembled in alphabetical order.
+#
+# sections_dir: ./sections
+
 # Log level: determines how detailed logging will be.
 # Default: debug
 # Should be one of the values supported by Ruby's Logger class:
 #   debug, info, warn, error, fatal
 #
 # log_level: debug
+
