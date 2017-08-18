@@ -10,6 +10,16 @@
 #
 # sections_dir: ./sections
 
+# Sections: an ordered list of files containing the project's text content
+# Default: nil
+# Source files will be processed and assembled in alphabetical order.
+#
+# sections: [
+#   ./sections/first_section.md,
+#   ./sections/second_section.html,
+#   ./sections/last_section.htm
+# ]
+
 # Log level: determines how detailed logging will be.
 # Default: debug
 # Should be one of the values supported by Ruby's Logger class:

@@ -119,5 +119,23 @@ describe NerdPress::Project do
         assert_equal section.to_html, path.read
       end
     end
+
+    describe 'when sections are explicitly listed in the config file' do
+      before do
+        config_file = './test/fixtures/config_with_sections.yml'
+        project.configure(config_file)
+      end
+
+      it 'exports the Sections in the order listed' do
+        source_paths = []
+        project.export_sections! do |section|
+          source_paths << section.source_path
+        end
+
+        assert_equal 2, source_paths.size
+        assert_match %r{/section2\.md}, source_paths[0].to_s
+        assert_match %r{/section1\.html}, source_paths[1].to_s
+      end
+    end
   end
 end

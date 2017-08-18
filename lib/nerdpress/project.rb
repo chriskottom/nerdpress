@@ -55,7 +55,21 @@ class NerdPress::Project
   end
 
   def sections
-    @sections ||= NerdPress::Section.load_from_directory(section_import_path,
-                                                         section_export_path)
+    if !@sections
+      @sections = sections_list_from_config
+      @sections ||= NerdPress::Section.load_from_directory(section_import_path,
+                                                           section_export_path)
+    end
+
+    @sections
+  end
+
+  def sections_list_from_config
+    locations = config_value(:sections)
+    if locations
+      locations.map do |location|
+        NerdPress::Section.new(location, section_export_path)
+      end
+    end
   end
 end

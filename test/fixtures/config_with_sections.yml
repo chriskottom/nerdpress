@@ -1,0 +1,7 @@
+---
+build_dir: ./test/tmp
+log_level: debug
+sections: [
+  './test/fixtures/project/sections/section2.md',
+  './test/fixtures/project/sections/section1.html'
+  ]
