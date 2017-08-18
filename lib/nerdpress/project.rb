@@ -32,17 +32,22 @@ class NerdPress::Project
 
   private
 
+  def config_value(sym)
+    (config && config.send(sym)) || nil
+  end
+
   def build_path
-    @build_dir ||= (config && config.build_dir) || home_directory.join('build')
+    @build_dir ||= config_value(:build_dir) || home_directory.join('build')
     Pathname.new(@build_dir)
   end
 
   def log_level
-    (config && config.log_level) || NerdPress::Logger::DEFAULT_LEVEL
+    config_value(:log_level) || NerdPress::Logger::DEFAULT_LEVEL
   end
 
   def section_import_path
-    home_directory.join('sections')
+    @sections_dir = config_value(:sections_dir) || home_directory.join('sections')
+    Pathname.new(@sections_dir)
   end
 
   def section_export_path
