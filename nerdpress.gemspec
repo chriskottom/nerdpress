@@ -37,4 +37,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'thor', '~> 0.19'
   spec.add_dependency 'github-markup', '~> 1.6.1'
   spec.add_dependency 'commonmarker', '~> 0.16'
+  spec.add_dependency 'sass', '~> 3.5'
 end

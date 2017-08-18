@@ -12,6 +12,10 @@ module BuildHelpers
     build_path.join('sections')
   end
 
+  def stylesheet_export_path
+    build_path.join('stylesheets')
+  end
+
   def project_path
     @project_path ||= Pathname.new(PROJECT_DIR)
   end
@@ -22,6 +26,10 @@ module BuildHelpers
 
   def section_import_path
     project_path.join('sections')
+  end
+
+  def stylesheet_import_path
+    project_path.join('stylesheets')
   end
 
   def reset_build
