@@ -32,6 +32,10 @@ module BuildHelpers
     project_path.join('stylesheets')
   end
 
+  def image_import_path
+    project_path.join('images')
+  end
+
   def reset_build
     project.instance_variable_set(:@configuration, nil) if defined?(project)
     build_path.rmtree if build_path.exist?

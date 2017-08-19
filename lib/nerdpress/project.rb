@@ -3,6 +3,7 @@ require 'pathname'
 require_relative './configuration.rb'
 require_relative './section.rb'
 require_relative './stylesheet.rb'
+require_relative './image.rb'
 
 class NerdPress::Project
   attr_reader :home_directory, :configuration
