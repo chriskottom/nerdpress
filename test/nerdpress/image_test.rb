@@ -50,13 +50,44 @@ describe NerdPress::Image do
   end
 
   describe '#to_data_uri' do
-    it 'produces a data URI based on the image file' do
-      image = klass.new(image_source)
-      assert_match %r{^data:image/png;base64,}, image.to_data_uri
+    describe 'when source is PNG' do
+      it 'produces a data URI based on the image file' do
+        image = klass.new(image_source)
+        content = Base64.encode64(image_source.read).gsub("\n", '')
+        assert_data_uri(image, mime_type: 'image/png', content: content)
+      end
+    end
 
-      base64_encoded_content = Base64.encode64(image.source_path.read)
-      base64_encoded_content.gsub!("\n", '')
-      assert_match /base64,#{ base64_encoded_content }$/, image.to_data_uri
+    describe 'when source is JPEG' do
+      it 'produces a data URI based on the image file' do
+        image_path = project_path.join('images/avatar.jpg')
+        image = klass.new(image_path)
+        content = Base64.encode64(image_path.read).gsub("\n", '')
+        assert_data_uri(image, mime_type: 'image/jpeg', content: content)
+
+        image_path = project_path.join('images/avatar.jpeg')
+        image = klass.new(image_path)
+        content = Base64.encode64(image_path.read).gsub("\n", '')
+        assert_data_uri(image, mime_type: 'image/jpeg', content: content)
+      end
+    end
+
+    describe 'when source is SVG' do
+      it 'produces a data URI based on the image file' do
+        image_path = project_path.join('images/exit-icon.svg')
+        image = klass.new(image_path)
+        content = Base64.encode64(image_path.read).gsub("\n", '')
+        assert_data_uri(image, mime_type: 'image/svg+xml', content: content)
+      end
+    end
+
+    describe 'when source is GIF' do
+      it 'produces a data URI based on the image file' do
+        image_path = project_path.join('images/guy.gif')
+        image = klass.new(image_path)
+        content = Base64.encode64(image_path.read).gsub("\n", '')
+        assert_data_uri(image, mime_type: 'image/gif', content: content)
+      end
     end
   end
 
@@ -64,5 +95,24 @@ describe NerdPress::Image do
 
   def klass
     NerdPress::Image
+  end
+
+  def assert_data_uri(image, mime_type: nil, content: nil)
+    data_uri = image.to_data_uri
+
+    if mime_type
+      escape_for_regexp(mime_type)
+      assert_match %r{^data:#{ mime_type };base64,}, data_uri
+    end
+
+    if content
+      escape_for_regexp(content)
+      assert_match %r{base64,#{ content }$}, data_uri
+    end
+  end
+
+  def escape_for_regexp(string)
+    string.gsub!(/\//, '\\/')
+    string.gsub!(/\+/, '\\\\+')
   end
 end
