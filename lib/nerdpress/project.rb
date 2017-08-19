@@ -31,6 +31,14 @@ class NerdPress::Project
     end
   end
 
+  def export_stylesheets!
+    Sass.load_paths << stylesheet_import_path
+    stylesheets.each do |stylesheet|
+      stylesheet.export_css!
+      yield stylesheet if block_given?
+    end
+  end
+
   private
 
   def config_value(sym)
@@ -47,7 +55,8 @@ class NerdPress::Project
   end
 
   def section_import_path
-    @sections_dir = config_value(:sections_dir) || home_directory.join('sections')
+    @sections_dir ||= ( config_value(:sections_dir) ||
+                        home_directory.join('sections') )
     Pathname.new(@sections_dir)
   end
 
@@ -72,5 +81,26 @@ class NerdPress::Project
         NerdPress::Section.new(location, section_export_path)
       end
     end
+  end
+
+  def stylesheet_import_path
+    @stylesheets_dir ||= ( config_value(:stylesheets_dir) ||
+                           home_directory.join('stylesheets') )
+    Pathname.new(@stylesheets_dir)
+  end
+
+  def stylesheet_export_path
+    build_path.join('stylesheets')
+  end
+
+  def stylesheets
+    if !@stylesheets
+      import_path = stylesheet_import_path
+      export_path = stylesheet_export_path
+      @stylesheets = NerdPress::Stylesheet.load_from_directory(import_path,
+                                                               export_path)
+    end
+
+    @stylesheets
   end
 end

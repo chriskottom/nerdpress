@@ -138,4 +138,30 @@ describe NerdPress::Project do
       end
     end
   end
+
+  describe '#export_stylesheets!' do
+    before do
+      project.configure
+    end
+
+    it 'creates a CSS export folder in the build directory' do
+      refute stylesheet_export_path.exist?, 'Expected stylesheet dir not to exist'
+
+      project.export_stylesheets!
+      assert stylesheet_export_path.exist?, 'Expected stylesheet dir to exist'
+    end
+
+    it 'writes CSS for each stylesheet to an export file' do
+      import_path, export_path = stylesheet_import_path, stylesheet_export_path
+      stylesheets = NerdPress::Stylesheet.load_from_directory(import_path,
+                                                              export_path)
+      project.export_stylesheets!
+
+      stylesheets.each do |stylesheet|
+        path = stylesheet.export_path
+        assert path.exist?, "Expected stylesheet to be exported to #{ path }"
+        assert_equal stylesheet.to_css, path.read
+      end
+    end
+  end
 end
