@@ -119,4 +119,34 @@ describe NerdPress::Commands::Build do
       end
     end
   end
+
+  describe '#export_stylesheets' do
+    it 'creates the export directory' do
+      refute stylesheet_export_path.exist?, 'Expected stylesheets dir not to exist'
+
+      out, err = capture_subprocess_io do
+        command = NerdPress::Commands::Build.new(formats, options)
+        invoke_tasks(command, :setup_build, :export_stylesheets)
+      end
+
+      assert stylesheet_export_path.exist?, 'Expected stylesheet dir to exist'
+    end
+
+    it 'exports each Stylesheet as CSS' do
+      import_path, export_path = stylesheet_import_path, stylesheet_export_path
+      stylesheets = NerdPress::Stylesheet.load_from_directory(import_path,
+                                                              export_path)
+
+      out, err = capture_subprocess_io do
+        command = NerdPress::Commands::Build.new(formats, options)
+        invoke_tasks(command, :setup_build, :export_stylesheets)
+      end
+
+      stylesheets.each do |stylesheet|
+        path = stylesheet.export_path
+        assert path.exist?, "Expected stylesheet to be exported to #{ path }"
+        assert_equal stylesheet.to_css, path.read
+      end
+    end
+  end
 end

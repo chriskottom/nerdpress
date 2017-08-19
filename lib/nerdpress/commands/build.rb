@@ -67,6 +67,12 @@ class NerdPress::Commands::Build < Thor::Group
     end
   end
 
+  def export_stylesheets
+    @project.export_stylesheets! do |stylesheet|
+      info "Exported to #{ stylesheet.export_path }"
+    end
+  end
+
   # Methods that should not be considered Thor commands for invocation
   no_commands do
     alias_method :old_formats, :formats

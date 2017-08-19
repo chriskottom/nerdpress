@@ -2,3 +2,4 @@
 build_dir: ./test/tmp
 log_level: debug
 sections_dir: ./test/fixtures/project/sections
+stylesheets_dir: ./test/fixtures/project/stylesheets
