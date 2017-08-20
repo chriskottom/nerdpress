@@ -5,18 +5,29 @@ class NerdPress::Image
   attr_reader :source_path
 
   class << self
+    attr_accessor :import_path
     attr_writer :instances
 
     def instances
       @instances ||= {}
     end
 
-    def lookup(path, dir = image_import_path)
-      path = Pathname.new(dir).join(path).expand_path
-      raise ArgumentError, "File not found at #{ path }" unless path.exist?
-      return instances[path] if instances.has_key?(path)
+    def lookup(search_path, dir = import_path)
+      image_path = compute_absolute_path(search_path, dir)
+      raise ArgumentError, "File not found at #{ search_path }" unless image_path
 
-      instances[path] = new(path)
+      return instances[image_path] if instances.has_key?(image_path)
+
+      instances[image_path] = new(image_path)
+    end
+
+    def compute_absolute_path(image_path, dir = import_path)
+      found_paths = []
+      Pathname.new(dir).find do |path|
+        found_paths << path if path.to_s =~ /#{ image_path.to_s }$/
+      end
+
+      return found_paths.first.expand_path if found_paths.any?
     end
   end
 

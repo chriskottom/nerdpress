@@ -9,6 +9,10 @@ describe NerdPress::Image do
   end
 
   describe 'lookup' do
+    before do
+      NerdPress::Image.import_path = image_import_path
+    end
+
     it 'returns the Image for the image file at the given path' do
       relative_path = 'images/blue-square.png'
       image = klass.lookup(relative_path, project_path)
@@ -22,6 +26,23 @@ describe NerdPress::Image do
       end
 
       assert_match %r{^File not found at .*#{ relative_path }}, error.message
+    end
+  end
+
+  describe 'compute_absolute_path' do
+    it 'returns the absolute path for a relative image path if found' do
+      image_filename = 'images/blue-square.png'
+      import_path = image_import_path
+
+      assert_equal image_source.expand_path,
+                   klass.compute_absolute_path(image_filename, import_path)
+    end
+
+    it 'returns nil if no matching file is found' do
+      image_filename = 'images/green-square.png'
+      import_path = image_import_path
+
+      assert_nil klass.compute_absolute_path(image_filename, import_path)
     end
   end
 
