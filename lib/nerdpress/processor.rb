@@ -22,8 +22,9 @@ end
 
 module NerdPress::Processors
   def self.default_processors
-    [ ]
+    [ NerdPress::Processors::ImageDataURIReplacement ]
   end
 end
 
 require_relative './processors/markdown_to_html.rb'
+require_relative './processors/image_data_uri_replacement.rb'
