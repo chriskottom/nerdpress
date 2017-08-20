@@ -57,6 +57,9 @@ class NerdPress::Commands::Build < Thor::Group
       config.publication_date = options[:date]
       info "Exported file will be published on #{ config.publication_date }"
     end
+
+    @project.setup_image_import!
+    info "Importing images from #{ NerdPress::Image.import_path }"
   end
 
   def export_text

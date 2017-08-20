@@ -96,6 +96,35 @@ describe NerdPress::Project do
     end
   end
 
+  describe '#setup_image_import!' do
+    after do
+      NerdPress::Image.import_path = nil
+    end
+
+    describe 'when defined in the config' do
+      it 'sets the import path for Images according to the config' do
+        image_dir = './test/images'
+        project.configure do |config|
+          config.image_dir = image_dir
+        end
+
+        project.setup_image_import!
+
+        assert_equal Pathname.new(image_dir).expand_path,
+                     NerdPress::Image.import_path
+      end
+    end
+
+    describe 'when not defined in the config' do
+      it 'sets the import path for Images to a default value' do
+        project.configure
+        project.setup_image_import!
+
+        assert_equal image_import_path.expand_path, NerdPress::Image.import_path
+      end
+    end
+  end
+
   describe '#export_sections!' do
     before do
       project.configure

@@ -25,6 +25,10 @@ class NerdPress::Project
     NerdPress::Logger.setup(log_dir: build_path, log_level: log_level)
   end
 
+  def setup_image_import!
+    NerdPress::Image.import_path = image_import_path.expand_path
+  end
+
   def export_sections!
     sections.each do |section|
       section.export_html!
@@ -103,5 +107,11 @@ class NerdPress::Project
     end
 
     @stylesheets
+  end
+
+  def image_import_path
+    @image_dir ||= ( config_value(:image_dir) ||
+                     home_directory.join('images') )
+    Pathname.new(@image_dir)
   end
 end

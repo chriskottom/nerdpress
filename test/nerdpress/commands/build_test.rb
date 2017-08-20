@@ -89,6 +89,18 @@ describe NerdPress::Commands::Build do
       assert_match(/Exported file will be published on #{ date }/, out)
       assert_empty err
     end
+
+    it 'sets up the import directory for Images' do
+      out, err = capture_subprocess_io do
+        command = NerdPress::Commands::Build.new(formats, options)
+        command.invoke :setup_build
+      end
+
+      expected = Pathname.new('images').expand_path
+      assert_equal expected, NerdPress::Image.import_path
+      assert_match(/Importing images from #{ expected }/, out)
+      assert_empty err
+    end
   end
 
   describe '#export_text' do
