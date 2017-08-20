@@ -5,11 +5,17 @@ class NerdPress::Image
   attr_reader :source_path
 
   class << self
-    attr_accessor :import_path
+    attr_reader :import_path
     attr_writer :instances
 
     def instances
       @instances ||= {}
+    end
+
+    def setup_import_path(path)
+      path = Pathname.new(path) if path
+      path = path.expand_path if path.respond_to?(:expand_path)
+      @import_path = path
     end
 
     def lookup(search_path, dir = import_path)

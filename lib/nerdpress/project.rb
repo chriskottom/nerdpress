@@ -26,7 +26,7 @@ class NerdPress::Project
   end
 
   def setup_image_import!
-    NerdPress::Image.import_path = image_import_path.expand_path
+    NerdPress::Image.setup_import_path image_import_path
   end
 
   def export_sections!

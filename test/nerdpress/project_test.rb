@@ -98,7 +98,7 @@ describe NerdPress::Project do
 
   describe '#setup_image_import!' do
     after do
-      NerdPress::Image.import_path = nil
+      NerdPress::Image.setup_import_path nil
     end
 
     describe 'when defined in the config' do

@@ -8,9 +8,32 @@ describe NerdPress::Image do
     klass.instances = nil
   end
 
+  describe 'setup_import_path' do
+    after do
+      NerdPress::Image.setup_import_path nil
+    end
+
+    it 'creates a Pathname out of the value passed to it' do
+      import_path = 'test/fixtures/project/images'
+      NerdPress::Image.setup_import_path import_path
+      assert_equal image_import_path.expand_path, NerdPress::Image.import_path
+    end
+
+    it 'expands Pathnames passed to it before setting' do
+      import_path = image_import_path
+      NerdPress::Image.setup_import_path import_path
+      assert_equal import_path.expand_path, NerdPress::Image.import_path
+    end
+
+    it 'resets the value when passed nil' do
+      NerdPress::Image.setup_import_path nil
+      assert_nil NerdPress::Image.import_path
+    end
+  end
+
   describe 'lookup' do
     before do
-      NerdPress::Image.import_path = image_import_path
+      NerdPress::Image.setup_import_path image_import_path
     end
 
     it 'returns the Image for the image file at the given path' do

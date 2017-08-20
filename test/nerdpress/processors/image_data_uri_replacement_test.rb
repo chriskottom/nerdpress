@@ -6,7 +6,7 @@ describe NerdPress::Processors::ImageDataURIReplacement do
   let(:processor) { NerdPress::Processors::ImageDataURIReplacement }
 
   before do
-    NerdPress::Image.import_path = image_import_path.expand_path
+    NerdPress::Image.setup_import_path image_import_path
   end
 
   it 'replaces path-based image sources with data URIs' do
