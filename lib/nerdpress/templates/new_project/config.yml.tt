@@ -20,10 +20,24 @@
 #   ./sections/last_section.htm
 # ]
 
+# Stylesheets directory: where CSS and Sass stylesheets live
+# Default: ./stylesheets
+# Stylesheets will be compiled to CSS (as needed) and exported
+# to the build directory for later use during manuscript creation.
+#
+# stylesheets_dir: ./stylesheets
+
+# Images directory: where images are stored (GIF, PNG, JPEG, SVG)
+# Default: ./images
+# Images referenced in project sections and found in the local project
+# directory will be replaced with data URIs (image is embedded in the
+# HTML).
+#
+# images_dir: ./images
+
 # Log level: determines how detailed logging will be.
 # Default: debug
 # Should be one of the values supported by Ruby's Logger class:
 #   debug, info, warn, error, fatal
 #
 # log_level: debug
-
