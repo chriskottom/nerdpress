@@ -35,6 +35,17 @@
 #
 # images_dir: ./images
 
+# Processors: an ordered list of Processor classes that will be used to
+# transform the source content into final exportable HTML.
+# A Processor is any Ruby class that includes the NerdPress::Processor
+# mixin and implements a #process method that accepts and returns a
+# content string.
+# Default: NerdPress::Processors.default_processors
+#
+# processors: [
+#   NerdPress::Processors::ImageDataURIReplacement
+# ]
+
 # Log level: determines how detailed logging will be.
 # Default: debug
 # Should be one of the values supported by Ruby's Logger class:

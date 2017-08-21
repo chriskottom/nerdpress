@@ -21,8 +21,25 @@ module NerdPress::Processor
 end
 
 module NerdPress::Processors
-  def self.default_processors
-    [ NerdPress::Processors::ImageDataURIReplacement ]
+  class << self
+    def setup_processors(processor_names = [])
+      if processor_names.nil? || processor_names.empty?
+        @processors = nil
+        return
+      end
+
+      @processors = processor_names.map do |proc_name|
+        Module.const_get(proc_name)
+      end
+    end
+
+    def processors
+      @processors || default_processors
+    end
+
+    def default_processors
+      [ NerdPress::Processors::ImageDataURIReplacement ]
+    end
   end
 end
 

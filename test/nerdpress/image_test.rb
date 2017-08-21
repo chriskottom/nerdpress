@@ -4,15 +4,7 @@ describe NerdPress::Image do
   let(:image_source) { project_path.join('images/blue-square.png') }
   let(:bad_image_source) { project_path.join('images/red-square.png') }
 
-  before do
-    klass.instances = nil
-  end
-
   describe 'setup_import_path' do
-    after do
-      NerdPress::Image.setup_import_path nil
-    end
-
     it 'creates a Pathname out of the value passed to it' do
       import_path = 'test/fixtures/project/images'
       NerdPress::Image.setup_import_path import_path

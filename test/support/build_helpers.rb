@@ -37,6 +37,9 @@ module BuildHelpers
   end
 
   def reset_build
+    NerdPress::Image.instances = nil
+    NerdPress::Image.setup_import_path nil
+    NerdPress::Processors.setup_processors
     project.instance_variable_set(:@configuration, nil) if defined?(project)
     build_path.rmtree if build_path.exist?
   end
