@@ -98,7 +98,27 @@ describe NerdPress::Commands::Build do
 
       expected = Pathname.new('images').expand_path
       assert_equal expected, NerdPress::Image.import_path
-      assert_match(/Importing images from #{ expected }/, out)
+      assert_match(/Images will be imported from #{ expected }/, out)
+      assert_empty err
+    end
+
+    it 'sets up Processors for HTML transformation' do
+      local_options = options
+      local_options['config_file'] = './test/fixtures/config_with_processors.yml'
+
+      out, err = capture_subprocess_io do
+        command = NerdPress::Commands::Build.new(formats, local_options)
+        command.invoke :setup_build
+      end
+
+      expected = [
+        NerdPress::Processors::DummyProcessor,
+        NerdPress::Processors::FakeProcessor
+      ]
+      assert_equal expected, NerdPress::Processors.processors
+
+      expected_names = expected.map(&:name).join(', ')
+      assert_match(/classes for HTML transformation: #{ expected_names }/, out)
       assert_empty err
     end
   end

@@ -125,6 +125,34 @@ describe NerdPress::Project do
     end
   end
 
+  describe '#setup_processors!' do
+    describe 'when defined in the config' do
+      let(:processor_names) { %w( NerdPress::Processors::DummyProcessor
+                                  NerdPress::Processors::FakeProcessor ) }
+      let(:processors) { [ NerdPress::Processors::DummyProcessor,
+                           NerdPress::Processors::FakeProcessor ] }
+
+      it 'uses the requested Processor classes' do
+        project.configure do |config|
+          config.processors = processor_names
+        end
+        project.setup_processors!
+
+        assert_equal processors, NerdPress::Processors.processors
+      end
+    end
+
+    describe 'when not defined in the config' do
+      it 'uses the default list of Processors' do
+        project.configure
+        project.setup_processors!
+
+        assert_equal NerdPress::Processors.default_processors,
+                     NerdPress::Processors.processors
+      end
+    end
+  end
+
   describe '#export_sections!' do
     before do
       project.configure

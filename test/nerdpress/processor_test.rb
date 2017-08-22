@@ -1,10 +1,5 @@
 require 'test_helper'
 
-class NerdPress::Processors::DummyProcessor
-  include NerdPress::Processor
-  def process; end
-end
-
 describe NerdPress::Processors do
   describe 'processors' do
     describe 'when set up with an array of Processor class names' do

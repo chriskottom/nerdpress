@@ -59,7 +59,11 @@ class NerdPress::Commands::Build < Thor::Group
     end
 
     @project.setup_image_import!
-    info "Importing images from #{ NerdPress::Image.import_path }"
+    debug "Images will be imported from #{ NerdPress::Image.import_path }"
+
+    @project.setup_processors!
+    proc_names = NerdPress::Processors.processors.map(&:name).join(', ')
+    debug "Configured classes for HTML transformation: #{ proc_names }"
   end
 
   def export_text

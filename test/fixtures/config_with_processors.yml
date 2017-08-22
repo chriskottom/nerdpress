@@ -1,0 +1,7 @@
+---
+build_dir: ./test/tmp
+log_level: debug
+processors: [
+ "NerdPress::Processors::DummyProcessor",
+ "NerdPress::Processors::FakeProcessor"
+]

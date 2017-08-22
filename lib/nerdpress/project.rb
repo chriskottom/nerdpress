@@ -29,6 +29,12 @@ class NerdPress::Project
     NerdPress::Image.setup_import_path image_import_path
   end
 
+  def setup_processors!
+    if processors = config_value(:processors)
+      NerdPress::Processors.setup_processors processors
+    end
+  end
+
   def export_sections!
     sections.each do |section|
       section.export_html!
