@@ -80,6 +80,15 @@ class NerdPress::Commands::Build < Thor::Group
     end
   end
 
+  def export_manuscripts
+    formats.each do |format|
+      @project.export_manuscript!(format) do |manuscript|
+        path = manuscript.export_path
+        info "Exported #{ format.upcase } manuscript to #{ path.to_s }"
+      end
+    end
+  end
+
   # Methods that should not be considered Thor commands for invocation
   no_commands do
     alias_method :old_formats, :formats

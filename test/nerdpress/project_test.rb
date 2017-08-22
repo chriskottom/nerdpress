@@ -221,4 +221,22 @@ describe NerdPress::Project do
       end
     end
   end
+
+  describe '#export_manuscript!' do
+    let(:format) { 'pdf' }
+    let(:manuscript_export_path) { build_path.join('manuscript_pdf.html') }
+
+    before do
+      project.configure(config_file)
+      project.export_sections!
+      project.export_stylesheets!
+    end
+
+    it 'exports the Manuscript for the given format' do
+      refute manuscript_export_path.exist?, 'Expected export file not to exist'
+
+      project.export_manuscript!(format)
+      assert manuscript_export_path.exist?, 'Expected export file to exist'
+    end
+  end
 end

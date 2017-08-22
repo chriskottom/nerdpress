@@ -181,4 +181,26 @@ describe NerdPress::Commands::Build do
       end
     end
   end
+
+  describe '#export_manuscripts' do
+    let(:formats) { %w( pdf epub mobi ) }
+    let(:manuscript_paths) {
+      formats.map { |f| build_path.join("manuscript_#{ f }.html") }
+    }
+
+    it 'exports a Manuscript HTML file for each requested format' do
+      manuscript_paths.each do |path|
+        refute path.exist?, "Expected manuscript path not to exist: #{ path.to_s }"
+      end
+
+      out, err = capture_subprocess_io do
+        command = NerdPress::Commands::Build.new(formats, options)
+        invoke_tasks(command, :setup_build, :export_text, :export_stylesheets, :export_manuscripts)
+      end
+
+      manuscript_paths.each do |path|
+        assert path.exist?, "Expected manuscript path to exist: #{ path.to_s }"
+      end
+    end
+  end
 end

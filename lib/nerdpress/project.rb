@@ -4,6 +4,7 @@ require_relative './configuration.rb'
 require_relative './section.rb'
 require_relative './stylesheet.rb'
 require_relative './image.rb'
+require_relative './manuscript.rb'
 
 class NerdPress::Project
   attr_reader :home_directory, :configuration
@@ -50,10 +51,26 @@ class NerdPress::Project
     end
   end
 
+  def export_manuscript!(format)
+    validate_export_format(format)
+    manuscript = NerdPress::Manuscript.new(format: format,
+                                           export_dir: build_path,
+                                           sections: sections,
+                                           stylesheet: stylesheet_for(format))
+    manuscript.export_html!
+    yield manuscript if block_given?
+  end
+
   private
 
   def config_value(sym)
     (config && config.send(sym)) || nil
+  end
+
+  def validate_export_format(format)
+    if !NerdPress::Formats::SUPPORTED_FORMATS.include?(format)
+      raise NerdPress::UnsupportedFormat, "Unsupported format: #{ format }"
+    end
   end
 
   def build_path
@@ -113,6 +130,22 @@ class NerdPress::Project
     end
 
     @stylesheets
+  end
+
+  def stylesheet_for(format)
+    case format
+    when 'html', 'pdf', 'mobi', 'epub'
+      stylesheet = stylesheets.find do |s|
+        s.export_path.basename.to_s == "#{ format }.css"
+      end
+
+      if !stylesheet
+        raise NerdPress::StylesheetMissing,
+              "Styles not found for format: #{ format }"
+      else
+        stylesheet
+      end
+    end
   end
 
   def image_import_path
