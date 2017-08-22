@@ -63,6 +63,12 @@ describe NerdPress::Section do
     end
   end
 
+  describe '#basename' do
+    it 'returns the export filename' do
+      assert_equal 'section2.html', markdown_section.basename
+    end
+  end
+
   describe '#to_html' do
     it 'applies the default processor chain' do
       html = File.read(html_source)

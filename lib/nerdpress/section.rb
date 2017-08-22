@@ -34,6 +34,10 @@ class NerdPress::Section
     @export_dir_path.join(html_filename)
   end
 
+  def basename
+    html_filename
+  end
+
   def to_html
     result = source
     processors.each do |processor|
