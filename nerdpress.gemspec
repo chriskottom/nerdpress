@@ -25,8 +25,7 @@ Gem::Specification.new do |spec|
     f.match(%r{^(test|spec|features)/})
   end
   spec.bindir        = 'bin'
-  spec.executables   = []
-  # spec.executables   = %w(nerdpress)
+  spec.executables   = %w(nerdpress)
   spec.require_paths = ['lib']
 
   spec.add_development_dependency 'bundler', '~> 1.15'
