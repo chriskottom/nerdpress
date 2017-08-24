@@ -26,6 +26,7 @@ describe NerdPress::Manuscript do
   describe '#to_html' do
     let(:html) { manuscript.to_html }
     let(:css) { stylesheet.to_css }
+    let(:comment_text) { '<!-- PREVIOUSLY EXPORTED CONTENT -->' }
 
     it 'formats the collected resources as an HTML document' do
       assert_match(%r{^<!DOCTYPE html .*<html>.*</html>$}m, html)
@@ -39,6 +40,23 @@ describe NerdPress::Manuscript do
       section_html = sections.map(&:to_html).join('.*')
       assert_match(%r{#{ section_html }}m, html)
     end
+
+    describe 'when the Manuscript has not been exported' do
+      it 'generates the HTML document from scratch' do
+        refute_match comment_text, manuscript.to_html
+      end
+    end
+
+    describe 'when the Manuscript has been exported' do
+      before do
+        manuscript.export_html!
+        manuscript.export_path.write comment_text
+      end
+
+      it 'reads the HTML content from the exported file' do
+        assert_match(/#{ comment_text }$/, manuscript.to_html)
+      end
+    end
   end
 
   describe '#export_html!' do
@@ -48,6 +66,13 @@ describe NerdPress::Manuscript do
       manuscript.export_html!
       assert manuscript.export_path.exist?, 'Expected export file to exist'
       assert_equal manuscript.to_html, manuscript.export_path.read
+    end
+
+    it 'sets the #exported? flag' do
+      refute manuscript.exported?, 'Expected new Manuscript not to be exported'
+
+      manuscript.export_html!
+      assert manuscript.exported?, 'Expected Manuscript to be exported'
     end
   end
 

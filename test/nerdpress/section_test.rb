@@ -70,6 +70,8 @@ describe NerdPress::Section do
   end
 
   describe '#to_html' do
+    let(:comment_text) { '<!-- PREVIOUSLY EXPORTED CONTENT -->' }
+
     it 'applies the default processor chain' do
       html = File.read(html_source)
       mock1 = mock_processor(html, html_section)
@@ -81,6 +83,23 @@ describe NerdPress::Section do
 
       assert_mock mock1
       assert_mock mock2
+    end
+
+    describe 'when the Section has not been exported' do
+      it 'generates the HTML from scratch' do
+        refute_match comment_text, markdown_section.to_html
+      end
+    end
+
+    describe 'when the Section has been exported' do
+      before do
+        markdown_section.export_html!
+        markdown_section.export_path.write comment_text
+      end
+
+      it 'reads the HTML content from the exported file' do
+        assert_match(/#{ comment_text }$/, markdown_section.to_html)
+      end
     end
   end
 
@@ -94,6 +113,13 @@ describe NerdPress::Section do
         assert section.export_path.exist?, 'Expected export file to exist'
         assert_equal section.source_path.read, section.export_path.read
       end
+
+      it 'sets the #exported? flag' do
+        refute html_section.exported?, 'Expected Section not to be exported'
+
+        html_section.export_html!
+        assert html_section.exported?, 'Expected Section to be exported'
+      end
     end
 
     describe 'when source is Markdown' do
@@ -104,6 +130,13 @@ describe NerdPress::Section do
         section.export_html!
         assert section.export_path.exist?, 'Expected export file to exist'
         assert_equal MarkupHelpers::SAMPLE_HTML, section.export_path.read
+      end
+
+      it 'sets the #exported? flag' do
+        refute markdown_section.exported?, 'Expected Section not to be exported'
+
+        markdown_section.export_html!
+        assert markdown_section.exported?, 'Expected Section to be exported'
       end
     end
   end

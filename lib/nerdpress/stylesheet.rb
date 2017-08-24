@@ -34,6 +34,8 @@ class NerdPress::Stylesheet
   end
 
   def to_css
+    return export_path.read if exported? && export_path.exist?
+
     result = @source_path.read
     result = sass_to_css(result)  # used for all formats to compress whitespace
     result
@@ -43,6 +45,11 @@ class NerdPress::Stylesheet
     @export_dir_path.mkpath unless @export_dir_path.exist?
     export_path.delete if export_path.exist?
     export_path.write self.to_css
+    @exported = true
+  end
+
+  def exported?
+    !!@exported
   end
 
   private

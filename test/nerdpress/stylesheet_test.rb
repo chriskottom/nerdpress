@@ -68,6 +68,8 @@ describe NerdPress::Stylesheet do
   end
 
   describe '#to_css' do
+    let(:comment_text) { '/* PREVIOUSLY EXPORTED CONTENT */' }
+
     describe 'when source is CSS' do
       it 'returns the source without modification' do
         assert_equal expected_css, css_stylesheet.to_css
@@ -85,6 +87,23 @@ describe NerdPress::Stylesheet do
         assert_equal expected_css, scss_stylesheet.to_css
       end
     end
+
+    describe 'when the Stylesheet has not been exported' do
+      it 'generates the CSS from scratch' do
+        refute_match comment_text, scss_stylesheet.to_css
+      end
+    end
+
+    describe 'when the Stylesheet has been exported' do
+      before do
+        scss_stylesheet.export_css!
+        scss_stylesheet.export_path.write comment_text
+      end
+
+      it 'reads the CSS from the exported file' do
+        assert_match comment_text, scss_stylesheet.to_css
+      end
+    end
   end
 
   describe '#export_css!' do
@@ -97,6 +116,13 @@ describe NerdPress::Stylesheet do
       assert scss_stylesheet.export_path.exist?,
              'Expected stylesheet to be exported'
       assert_equal expected_css, scss_stylesheet.export_path.read
+    end
+
+    it 'sets the #exported? flag' do
+      refute scss_stylesheet.exported?, 'Expected Stylesheet not to be exported'
+
+      scss_stylesheet.export_css!
+      assert scss_stylesheet.exported?, 'Expected Stylesheet to be exported'
     end
   end
 

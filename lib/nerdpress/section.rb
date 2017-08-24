@@ -39,6 +39,8 @@ class NerdPress::Section
   end
 
   def to_html
+    return export_path.read if exported? && export_path.exist?
+
     result = source
     processors.each do |processor|
       result = processor.process(result, self)
@@ -50,6 +52,11 @@ class NerdPress::Section
     @export_dir_path.mkpath unless @export_dir_path.exist?
     export_path.delete if export_path.exist?
     export_path.write self.to_html
+    @exported = true
+  end
+
+  def exported?
+    !!@exported
   end
 
   private

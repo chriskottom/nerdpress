@@ -14,6 +14,8 @@ class NerdPress::Manuscript
   end
 
   def to_html
+    return export_path.read if exported? && export_path.exist?
+
     builder= Nokogiri::HTML::Builder.new do |doc|
       doc.html {
         doc.style(type: 'text/css') {
@@ -34,6 +36,11 @@ class NerdPress::Manuscript
     @export_dir_path.mkpath unless @export_dir_path.exist?
     export_path.delete if export_path.exist?
     export_path.write self.to_html
+    @exported = true
+  end
+
+  def exported?
+    !!@exported
   end
 
   private
