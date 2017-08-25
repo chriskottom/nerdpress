@@ -53,10 +53,7 @@ class NerdPress::Project
 
   def export_manuscript!(format)
     validate_export_format(format)
-    manuscript = NerdPress::Manuscript.new(format: format,
-                                           export_dir: build_path,
-                                           sections: sections,
-                                           stylesheet: stylesheet_for(format))
+    manuscript = manuscript_for(format)
     manuscript.export_html!
     yield manuscript if block_given?
   end
@@ -152,5 +149,16 @@ class NerdPress::Project
     @image_dir ||= ( config_value(:image_dir) ||
                      home_directory.join('images') )
     Pathname.new(@image_dir)
+  end
+
+  def manuscripts
+    @manuscripts ||= {}
+  end
+
+  def manuscript_for(format)
+    manuscripts[format] ||= NerdPress::Manuscript.new(format: format,
+                                                      export_dir: build_path,
+                                                      sections: sections,
+                                                      stylesheet: stylesheet_for(format))
   end
 end
