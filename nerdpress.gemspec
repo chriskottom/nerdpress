@@ -38,4 +38,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'commonmarker', '~> 0.16'
   spec.add_dependency 'sass', '~> 3.5'
   spec.add_dependency 'nokogiri', '~> 1.8'
+
+  spec.add_dependency 'docraptor', '~> 1.2'
 end

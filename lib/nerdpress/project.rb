@@ -5,6 +5,7 @@ require_relative './section.rb'
 require_relative './stylesheet.rb'
 require_relative './image.rb'
 require_relative './manuscript.rb'
+require_relative './publisher'
 
 class NerdPress::Project
   attr_reader :home_directory, :configuration
@@ -56,6 +57,13 @@ class NerdPress::Project
     manuscript = manuscript_for(format)
     manuscript.export_html!
     yield manuscript if block_given?
+  end
+
+  def export_deliverable!(format)
+    validate_export_format(format)
+    manuscript = manuscript_for(format)
+    deliverable_path = publish_as(format: format, manuscript: manuscript)
+    yield deliverable_path if block_given?
   end
 
   private
@@ -160,5 +168,23 @@ class NerdPress::Project
                                                       export_dir: build_path,
                                                       sections: sections,
                                                       stylesheet: stylesheet_for(format))
+  end
+
+  def deliverables_path
+    build_path.join('deliverables')
+  end
+
+  def publish_as(format:, manuscript:)
+    format_config = config.send(format).dup
+    format_config.deliverables_path = deliverables_path
+    format_config.version = config.version
+
+    case format
+    when 'pdf'
+      publisher = NerdPress::Publishers::DocRaptor.new(format_config)
+      publisher.publish manuscript
+    else
+      puts "Publishing as #{ format.upcase } (not implemented yet)"
+    end
   end
 end

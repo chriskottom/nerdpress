@@ -89,6 +89,14 @@ class NerdPress::Commands::Build < Thor::Group
     end
   end
 
+  def export_deliverables
+    formats.each do |format|
+      @project.export_deliverable!(format) do |deliverable_path|
+        info "Exported #{ format.upcase } version to #{ deliverable_path.to_s }"
+      end
+    end
+  end
+
   # Methods that should not be considered Thor commands for invocation
   no_commands do
     alias_method :old_formats, :formats
